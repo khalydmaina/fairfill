@@ -1,0 +1,103 @@
+[
+ {
+  "universe": [
+   {
+    "szDecimals": 3,
+    "name": "xyz:TSLA",
+    "maxLeverage": 20,
+    "marginTableId": 20,
+    "growthMode": "enabled",
+    "lastFeeScaleChangeTime": "2025-11-23T17:37:10.033211662",
+    "deployerFeeScale": "1.0"
+   },
+   {
+    "szDecimals": 3,
+    "name": "xyz:NVDA",
+    "maxLeverage": 20,
+    "marginTableId": 20,
+    "growthMode": "enabled",
+    "lastFeeScaleChangeTime": "2025-11-23T17:37:10.033211662",
+    "deployerFeeScale": "1.0"
+   },
+   {
+    "szDecimals": 4,
+    "name": "xyz:GOLD",
+    "maxLeverage": 25,
+    "marginTableId": 25,
+    "lastFeeScaleChangeTime": "1970-01-01T00:00:00",
+    "deployerFeeScale": "1.0"
+   },
+   {
+    "szDecimals": 3,
+    "name": "xyz:AAPL",
+    "maxLeverage": 20,
+    "marginTableId": 20,
+    "growthMode": "enabled",
+    "lastFeeScaleChangeTime": "2025-11-23T17:37:10.033211662",
+    "deployerFeeScale": "1.0"
+   }
+  ]
+ },
+ [
+  {
+   "funding": "-0.000030867",
+   "openInterest": "118130.968",
+   "prevDayPx": "365.78",
+   "dayNtlVlm": "9368167.2634399999",
+   "premium": "-0.0008247962",
+   "oraclePx": "363.12",
+   "markPx": "362.84",
+   "midPx": "362.83",
+   "impactPxs": [
+    "362.783",
+    "362.858"
+   ],
+   "dayBaseVlm": "25571.761"
+  },
+  {
+   "funding": "0.0000118296",
+   "openInterest": "545862.1260000003",
+   "prevDayPx": "219.2",
+   "dayNtlVlm": "22050416.8448099941",
+   "premium": "-0.0001254822",
+   "oraclePx": "215.17",
+   "markPx": "215.15",
+   "midPx": "215.14",
+   "impactPxs": [
+    "215.13",
+    "215.156"
+   ],
+   "dayBaseVlm": "101863.479"
+  },
+  {
+   "funding": "0.0000006521",
+   "openInterest": "80131.593",
+   "prevDayPx": "4354.4",
+   "dayNtlVlm": "7591545.1638200032",
+   "premium": "-0.0005875995",
+   "oraclePx": "4348.2",
+   "markPx": "4346.7",
+   "midPx": "4345.85",
+   "impactPxs": [
+    "4345.39",
+    "4345.9"
+   ],
+   "dayBaseVlm": "1744.7608"
+  },
+  {
+   "funding": "-0.0000116485",
+   "openInterest": "251845.022",
+   "prevDayPx": "333.28",
+   "dayNtlVlm": "3203089.7995800003",
+   "premium": "-0.0009121387",
+   "oraclePx": "331.09",
+   "markPx": "330.83",
+   "midPx": "330.805",
+   "impactPxs": [
+    "330.757",
+    "330.819"
+   ],
+   "dayBaseVlm": "9651.239"
+  }
+ ]
+]
