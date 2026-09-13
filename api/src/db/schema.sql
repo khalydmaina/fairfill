@@ -30,10 +30,11 @@ CREATE TABLE IF NOT EXISTS perp_ticks (
 CREATE INDEX IF NOT EXISTS idx_perp_ticks ON perp_ticks (stock, ts);
 
 CREATE TABLE IF NOT EXISTS real_ticks (
-  ts      INTEGER NOT NULL,
-  stock   TEXT NOT NULL,
-  price   REAL NOT NULL,
-  source  TEXT NOT NULL
+  ts          INTEGER NOT NULL,  -- trade time reported by the source
+  stock       TEXT NOT NULL,
+  price       REAL NOT NULL,
+  source      TEXT NOT NULL,
+  fetched_ts  INTEGER            -- when we saw it, to measure source delay
 );
 CREATE INDEX IF NOT EXISTS idx_real_ticks ON real_ticks (stock, ts);
 

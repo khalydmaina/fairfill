@@ -64,4 +64,8 @@ export const recorderConfig = {
   sweepUsd: 100,
   /** Spacing between Jupiter calls inside a sweep. 1.1 s ran 60 quotes cleanly on 13 Sep 2026. */
   sweepSpacingMs: 1_100,
+  realPriceIntervalMs: 60_000,
+  /** Outside the regular session the last close does not move, so poll rarely. */
+  realPriceClosedEveryMinutes: 30,
+  realPriceSpacingMs: 1_500,
 };
