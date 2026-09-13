@@ -1,0 +1,16 @@
+sweep 2026-09-13T16:59:52.199Z, verdict band ±0.5%, perp not basis-corrected
+
+stock  last close (time)          perp     best buy  vs close  vs perp   close says  perp says
+NVDA   218.29   (2026-09-11T20:00Z) 215.47   216.09    -1.01%    0.29%     cheap       fair  <- different answer
+TSLA   365.44   (2026-09-11T20:00Z) 363.27   363.76    -0.46%    0.13%     fair        fair
+AAPL   332.27   (2026-09-11T20:00Z) 331.12   331.62    -0.20%    0.15%     fair        fair
+MSFT   495.63   (2026-09-11T20:00Z) 492.13   492.58    -0.61%    0.09%     cheap       fair  <- different answer
+GOOGL  338.50   (2026-09-11T20:00Z) 337.31   338.19    -0.09%    0.26%     fair        fair
+AMZN   256.78   (2026-09-11T20:00Z) 254.23   254.69    -0.81%    0.18%     cheap       fair  <- different answer
+META   648.03   (2026-09-11T20:00Z) 643.33   644.38    -0.56%    0.16%     cheap       fair  <- different answer
+AMD    516.13   (2026-09-11T20:00Z) 502.19   503.86    -2.38%    0.33%     cheap       fair  <- different answer
+COIN   175.26   (2026-09-11T20:00Z) 173.44   173.85    -0.80%    0.24%     cheap       fair  <- different answer
+CRCL   90.60    (2026-09-11T20:00Z) 90.57    90.63     0.03%     0.07%     fair        fair
+HOOD   112.57   (2026-09-11T20:00Z) 108.80   108.95    -3.22%    0.14%     cheap       fair  <- different answer
+MSTR   130.97   (2026-09-11T20:00Z) 130.37   130.62    -0.27%    0.20%     fair        fair
+PLTR   167.23   (2026-09-11T20:00Z) 164.93   166.26    -0.58%    0.81%     cheap       expensive  <- different answer

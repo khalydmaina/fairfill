@@ -42,3 +42,15 @@ describe("parseUltraOrder", () => {
     expect(parseUltraOrder({ outAmount: "0", errorMessage: "No routes found" })).toMatchObject({ outAmount: null, error: "No routes found" });
   });
 });
+
+describe("parseChartMeta", () => {
+  it("reads the last regular trade", async () => {
+    const { parseChartMeta } = await import("../src/sources/yahoo.js");
+    const q = parseChartMeta({ chart: { result: [{ meta: { symbol: "NVDA", regularMarketPrice: 218.29, regularMarketTime: 1789156800 } }], error: null } });
+    expect(q).toEqual({ symbol: "NVDA", price: 218.29, marketTime: Date.parse("2026-09-11T20:00:00Z") });
+  });
+  it("throws on an empty result", async () => {
+    const { parseChartMeta } = await import("../src/sources/yahoo.js");
+    expect(() => parseChartMeta({ chart: { result: null, error: { description: "No data found" } } })).toThrow(/No data found/);
+  });
+});

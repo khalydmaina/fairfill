@@ -1,10 +1,11 @@
 import { env, recorderConfig } from "./config.js";
 import { openDb } from "./db/db.js";
-import { multiplierJob, perpJob, runJob, sweepJob, type MultiplierCache } from "./recorder/jobs.js";
+import { multiplierJob, perpJob, realPriceJob, runJob, shouldPollRealPrice, sweepJob, type MultiplierCache, type RealPriceSeen } from "./recorder/jobs.js";
 import { delayToNextBoundary } from "./recorder/schedule.js";
 
 const db = openDb(env.dbPath);
 const cache: MultiplierCache = new Map();
+const realSeen: RealPriceSeen = new Map();
 const timers = new Map<string, NodeJS.Timeout>();
 let stopping = false;
 
@@ -50,6 +51,14 @@ async function main() {
   every(recorderConfig.perpIntervalMs, "perps", () => runJob(db, "perps", () => perpJob(db)));
   every(recorderConfig.multiplierIntervalMs, "multipliers", () => runJob(db, "multipliers", () => multiplierJob(db, cache)));
   every(recorderConfig.sweepIntervalMs, "sweep", () => runJob(db, "sweep", () => sweepJob(db, cache)), true);
+  every(
+    recorderConfig.realPriceIntervalMs,
+    "real",
+    async () => {
+      if (shouldPollRealPrice(Date.now(), realSeen.size > 0)) await runJob(db, "real", () => realPriceJob(db, realSeen));
+    },
+    true,
+  );
 }
 
 function shutdown(signal: string) {

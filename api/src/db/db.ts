@@ -14,8 +14,15 @@ export function openDb(path: string): Db {
   db.pragma("journal_mode = WAL");
   db.pragma("busy_timeout = 5000");
   db.exec(schema);
+  ensureColumn(db, "real_ticks", "fetched_ts", "INTEGER");
   seedTokens(db);
   return db;
+}
+
+/** CREATE TABLE IF NOT EXISTS never alters an existing table, so columns added later are migrated here. */
+function ensureColumn(db: Db, table: string, column: string, type: string) {
+  const columns = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;
+  if (!columns.some((c) => c.name === column)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
 }
 
 function seedTokens(db: Db) {

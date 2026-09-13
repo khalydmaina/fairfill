@@ -36,3 +36,15 @@ describe("db + runJob", () => {
     expect(db.prepare("SELECT job, ok, detail FROM job_runs").get()).toEqual({ job: "boom", ok: 0, detail: "upstream down" });
   });
 });
+
+describe("shouldPollRealPrice", async () => {
+  const { shouldPollRealPrice } = await import("../src/recorder/jobs.js");
+  it("polls every minute while open", () => {
+    expect(shouldPollRealPrice(Date.parse("2026-09-14T15:07:00Z"), true)).toBe(true);
+  });
+  it("polls on 30-minute marks while closed, or when there is no data yet", () => {
+    expect(shouldPollRealPrice(Date.parse("2026-09-13T17:07:00Z"), true)).toBe(false);
+    expect(shouldPollRealPrice(Date.parse("2026-09-13T17:30:00Z"), true)).toBe(true);
+    expect(shouldPollRealPrice(Date.parse("2026-09-13T17:07:00Z"), false)).toBe(true);
+  });
+});

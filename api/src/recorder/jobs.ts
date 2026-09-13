@@ -1,10 +1,12 @@
-import { PERP_BY_STOCK, recorderConfig, TOKENS, USDC_DECIMALS, USDC_MINT, type Token } from "../config.js";
+import { PERP_BY_STOCK, recorderConfig, STOCKS, TOKENS, USDC_DECIMALS, USDC_MINT, type Token } from "../config.js";
 import type { Db } from "../db/db.js";
 import { effectiveMultiplier, pricePerShare, rawToShares, rawToUnits, unitsToRaw, type MultiplierConfig } from "../engine/shares.js";
 import { sleep } from "../lib/http.js";
 import { fetchXyzPerps } from "../sources/hyperliquid.js";
 import { ultraOrder, type UltraOrder } from "../sources/jupiter.js";
 import { fetchMultiplierConfigs } from "../sources/solana.js";
+import { fetchStockQuote } from "../sources/yahoo.js";
+import { marketStatus } from "../engine/sessions.js";
 
 export type MultiplierCache = Map<string, MultiplierConfig | null>;
 
@@ -173,4 +175,35 @@ export async function sweepJob(db: Db, cache: MultiplierCache): Promise<string> 
   const detail = `sweep ${sweepId}: ${buys} buys, ${sells} sells, ${misses} no-quote, ${failures} fetch failures`;
   if (failures > TOKENS.length / 2) throw new Error(detail);
   return detail;
+}
+
+/** stock -> last recorded trade time, so an unchanged quote is not stored twice. */
+export type RealPriceSeen = Map<string, number>;
+
+/** Every minute during the regular session. Otherwise every 30 minutes (the close does not move), or now if we have nothing yet. */
+export function shouldPollRealPrice(now: number, haveData: boolean): boolean {
+  if (marketStatus(now) === "open" || !haveData) return true;
+  return Math.floor(now / 60_000) % recorderConfig.realPriceClosedEveryMinutes === 0;
+}
+
+/** Real exchange prices from the Yahoo candidate source. Stores a tick only when the trade time changed. */
+export async function realPriceJob(db: Db, seen: RealPriceSeen): Promise<string> {
+  const insert = db.prepare("INSERT INTO real_ticks (ts, stock, price, source, fetched_ts) VALUES (?, ?, ?, 'yahoo', ?)");
+  let stored = 0;
+  const failed: string[] = [];
+  for (const stock of STOCKS) {
+    try {
+      const q = await fetchStockQuote(stock);
+      if (seen.get(stock) !== q.marketTime) {
+        insert.run(q.marketTime, stock, q.price, Date.now());
+        seen.set(stock, q.marketTime);
+        stored++;
+      }
+    } catch {
+      failed.push(stock);
+    }
+    await sleep(recorderConfig.realPriceSpacingMs);
+  }
+  if (failed.length === STOCKS.length) throw new Error("yahoo: every quote failed");
+  return `${stored} new ticks${failed.length ? `, failed ${failed.join(",")}` : ""}`;
 }
