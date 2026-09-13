@@ -1,0 +1,54 @@
+name: recorder
+
+# Backup price recorder. Each run records for ~5h40m and uploads its SQLite file as an artifact.
+# The half-hourly schedule keeps one run waiting in the concurrency group, so when a run ends the
+# waiting one starts right away and the recording stays close to continuous.
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: recorder
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: api/package-lock.json
+
+      - name: Install
+        working-directory: api
+        run: npm ci
+
+      - name: Record
+        working-directory: api
+        env:
+          FAIRFILL_DB: ${{ github.workspace }}/recorder-data/gha-${{ github.run_id }}.db
+        # SIGTERM lets the recorder close the database cleanly. timeout exits 124 when it fires, which is the normal end.
+        run: |
+          set +e
+          timeout --signal=TERM --kill-after=30s 340m node node_modules/tsx/dist/cli.mjs src/recorder.ts
+          code=$?
+          if [ "$code" -ne 0 ] && [ "$code" -ne 124 ]; then exit "$code"; fi
+          npx tsx scripts/status.ts | head -12
+
+      - name: Upload recording
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recorder-${{ github.run_id }}
+          path: recorder-data/
+          retention-days: 30
+          if-no-files-found: warn
