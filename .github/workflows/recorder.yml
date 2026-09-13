@@ -7,9 +7,13 @@ on:
   schedule:
     - cron: "7,37 * * * *"
   workflow_dispatch:
+    inputs:
+      minutes:
+        description: "Recording length in minutes. Anything other than 340 runs as a separate test outside the chain."
+        default: "340"
 
 concurrency:
-  group: recorder
+  group: ${{ github.event_name == 'workflow_dispatch' && inputs.minutes != '340' && format('recorder-test-{0}', github.run_id) || 'recorder' }}
   cancel-in-progress: false
 
 permissions:
@@ -36,10 +40,11 @@ jobs:
         working-directory: api
         env:
           FAIRFILL_DB: ${{ github.workspace }}/recorder-data/gha-${{ github.run_id }}.db
+          MINUTES: ${{ inputs.minutes || '340' }}
         # SIGTERM lets the recorder close the database cleanly. timeout exits 124 when it fires, which is the normal end.
         run: |
           set +e
-          timeout --signal=TERM --kill-after=30s 340m node node_modules/tsx/dist/cli.mjs src/recorder.ts
+          timeout --signal=TERM --kill-after=30s "${MINUTES}m" node node_modules/tsx/dist/cli.mjs src/recorder.ts
           code=$?
           if [ "$code" -ne 0 ] && [ "$code" -ne 124 ]; then exit "$code"; fi
           npx tsx scripts/status.ts | head -12
