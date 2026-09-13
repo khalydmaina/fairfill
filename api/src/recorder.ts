@@ -1,6 +1,7 @@
 import { env, recorderConfig } from "./config.js";
 import { openDb } from "./db/db.js";
 import { multiplierJob, perpJob, runJob, sweepJob, type MultiplierCache } from "./recorder/jobs.js";
+import { delayToNextBoundary } from "./recorder/schedule.js";
 
 const db = openDb(env.dbPath);
 const cache: MultiplierCache = new Map();
@@ -27,7 +28,7 @@ function every(intervalMs: number, name: string, fn: () => Promise<unknown>, run
   };
   const schedule = () => {
     if (stopping) return;
-    const delay = intervalMs - (Date.now() % intervalMs);
+    const delay = delayToNextBoundary(Date.now(), intervalMs);
     timers.set(
       name,
       setTimeout(() => {
