@@ -368,7 +368,7 @@ Store raw amounts as TEXT (u64 overflows JS numbers). Store the wallet as a hash
 
 **B. Stock page**
 - Left: chart. Fair band as a shaded ribbon, xStocks and Ondo per-share buy prices as two lines, closed hours shaded, dots where the premium exceeded the guard.
-- Right: trade panel. Buy / Sell tabs, USD input with $50 / $100 / $500 chips, two issuer cards side by side (per-share price, premium, route type "AMM" or "RFQ"), one card marked **Best**, a single line of reasoning ("Ondo is $6.34/share cheaper right now"), big Buy button.
+- Right: trade panel. Buy / Sell tabs, USD input with $2 / $10 / $100 chips and Max, two issuer cards side by side (per-share price, premium, route type "AMM" or "RFQ"), one card marked **Best**, a single line of reasoning ("Ondo is $6.34/share cheaper right now"), big Buy button.
 
 **C. Guard (modal)**
 "NVDA is 1.4% above fair right now. Buying $500 costs about $7.00 more than fair. Market opens in 14h 20m." Buttons: Buy anyway · Buy at fair when available (P1) · Cancel.
@@ -384,7 +384,7 @@ Stock tokens in the wallet, shares, value at fair, and "selling now gets x% belo
 
 ### 11.2 States to design (each must exist, not just the happy path)
 
-Wallet not connected · no quote from one issuer ("Ondo isn't quoting HOOD right now") · no quote from either · calibrating · no fair price · stale data (> 90 s) · quote expired · user rejected signature · transaction failed (show Jupiter's error) · slow confirmation.
+Wallet not connected · amount under an issuer's minimum (Ondo: $2, USDC only; xStocks: $0.50) · not enough SOL for the network fee or a new token account deposit (show the exact SOL needed) · no quote from one issuer ("Ondo isn't quoting HOOD right now") · no quote from either · calibrating · no fair price · stale data (> 90 s) · quote expired · user rejected signature · transaction failed (show Jupiter's error) · slow confirmation.
 
 ---
 
@@ -451,7 +451,7 @@ All times UTC. Deadline is **Fri 20:00 UTC**; aim to submit by **Fri 16:00 UTC**
 ### Tue 15 Sep: money moves
 - [ ] Web: board + stock page against real API
 - [ ] Wallet connect, `/api/quote` with taker, Ultra execute
-- [ ] **First real mainnet buy, $10, both issuers** (prove RFQ fills for your wallet too)
+- [ ] **First real mainnet buy, ~$2.10** through the cheaper issuer, then sell back and buy through the other one (prove both routes fill for your wallet)
 - [ ] Sell flow
 - [ ] P1-1 probe: can a Trigger order be placed on a stock token? Note yes/no, don't build it yet
 
@@ -482,7 +482,7 @@ All times UTC. Deadline is **Fri 20:00 UTC**; aim to submit by **Fri 16:00 UTC**
 2. **The board (30 s).** 13 stocks, both issuers, per-share prices, market status "Overnight". Point at a row where the other issuer is cheaper.
 3. **The Sunday price (40 s).** Replay chart over last weekend: fair band from the 24/7 market, token prices drifting above it while brokerages were closed, then snapping back at Monday's open. Open the Method page for 5 seconds: "here's the formula and today's calibration."
 4. **The guard (20 s).** Try to buy a stock that's above fair. Guard: "costs $X more than fair, market opens in 9h."
-5. **The buy (40 s).** Buy $50 of a stock through the cheaper issuer. Sign in Phantom. Receipt: shares, premium, saved vs the other issuer, Solscan link.
+5. **The buy (40 s).** Buy $2 of a stock through the cheaper issuer. Sign in Phantom. Receipt: shares, premium, saved vs the other issuer, Solscan link.
 6. **Close (15 s).** "Two issuers, one chain, open all weekend. Fairfill makes sure you pay the stock's price, not the weekend's."
 
 Fallback: if the live buy fails on camera, cut to Tuesday's recorded buy and say so in the voiceover.
@@ -508,7 +508,7 @@ Fallback: if the live buy fails on camera, cut to Tuesday's recorded buy and say
 | Need | Status | Action |
 |---|---|---|
 | Node 20, Git, gh | Have | |
-| Phantom (or Solflare) wallet on mainnet | ? | ~$30 USDC + ~0.05 SOL for real test buys and the demo |
+| Phantom (or Solflare) wallet on mainnet | Has ~0.03 SOL (~$3) | Swap ~0.022 SOL to ~$2.20 USDC on Tuesday and recycle it: buy, sell back, buy through the other issuer, final buy on camera. Keep at least 0.004 SOL for fees and token account deposits (~0.0015-0.0017 SOL each, refundable when closed) |
 | Jupiter API | Keyless `lite-api` works | Get a free key as backup, check rate limits |
 | Hyperliquid info API | Works, no key | |
 | Real price source | Not chosen | Finnhub free key (Monday cross-check), fallbacks need no key |
