@@ -95,7 +95,7 @@ Executable $100 buys via Jupiter Ultra, converted to price per share using each 
 
 | ID | Feature | Note |
 |---|---|---|
-| P1-1 | **Buy-at-fair order** | When the guard fires, offer a Jupiter Trigger (limit) order at fair + band, expiring at next open + 1 h. Trigger API answered 200 on 13 Sep; **Token-2022 stock support unverified**, test on Tuesday with $10 |
+| P1-1 | **Buy-at-fair order** | When the guard fires, offer a Jupiter Trigger (limit) order at fair + band, expiring at next open + 1 h. Trigger API answered 200 on 13 Sep; **Token-2022 stock support unverified**, test on Tuesday with a $2 order |
 | P1-2 | **Holdings** | Connected wallet's stock tokens, shares (raw × multiplier), value at fair, current sell premium |
 | P1-3 | **Shareable receipt image** | PNG card for X posts |
 
